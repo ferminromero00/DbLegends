@@ -1,0 +1,390 @@
+{
+  "adb": "C:\\Program Files\\BlueStacks_nxt\\HD-Adb.exe",
+  "device": "127.0.0.1:5555",
+  "poll_interval": 0.7,
+  "unknown_timeout": 60,
+  "max_repeats": 6,
+  "screens": [
+    {
+      "name": "combate_auto_si",
+      "template": "screens/combate_auto_si.png",
+      "region": [40, 60, 260, 200],
+      "threshold": 0.85,
+      "cooldown": 30,
+      "actions": [],
+      "comment": "combate en auto: no hacer nada; al ir primero bloquea el resto de reglas durante la pelea"
+    },
+    {
+      "name": "confirmacion_desafio",
+      "template": "screens/confirm_desafio_titulo.png",
+      "region": [0, 330, 900, 470],
+      "threshold": 0.87,
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap", "x": 637, "y": 1141, "comment": "boton Si"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "confirmacion_aventura",
+      "template": "screens/confirm_aventura.png",
+      "region": [0, 330, 900, 470],
+      "threshold": 0.87,
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap", "x": 637, "y": 1141, "comment": "boton Si"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "confirm_num_luchadores",
+      "template": "screens/confirm_num_luchadores.png",
+      "region": [0, 350, 900, 480],
+      "threshold": 0.87,
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap", "x": 637, "y": 1141, "comment": "Si, luchar con menos de tres luchadores"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "advertencia_poder",
+      "template": "screens/advertencia_poder.png",
+      "region": [0, 350, 900, 480],
+      "threshold": 0.87,
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap", "x": 637, "y": 1141, "comment": "Si, luchar aunque el poder sea menor al recomendado"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "reproducir_tutorial_volver",
+      "template": "screens/reproducir_tutorial.png",
+      "region": [0, 330, 900, 470],
+      "threshold": 0.87,
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap", "x": 262, "y": 1142, "comment": "Volver: NO entrar al tutorial de Trunks"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "tutorial_flecha",
+      "detector": "flecha_verde",
+      "cooldown": 2,
+      "actions": [
+        {"type": "tap_match", "comment": "tocar el boton que senala la flecha verde (el detector ya calcula el punto)"},
+        {"type": "sleep", "s": 1.2}
+      ]
+    },
+    {
+      "name": "boton_confirmar",
+      "template": "screens/boton_confirmar.png",
+      "region": [200, 1470, 700, 1595],
+      "threshold": 0.88,
+      "cooldown": 4,
+      "actions": [
+        {"type": "tap_match", "comment": "boton Confirmar"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "tutorial_kaito",
+      "template": "screens/tutorial_kaito.png",
+      "threshold": 0.9,
+      "cooldown": 2,
+      "actions": [
+        {"type": "tap_match", "dx": 330, "comment": "avanzar bocadillo del tutorial"},
+        {"type": "sleep", "s": 1.0}
+      ]
+    },
+    {
+      "name": "panel_siguiente",
+      "template": "screens/panel_siguiente.png",
+      "region": [250, 1380, 650, 1580],
+      "threshold": 0.85,
+      "cooldown": 2,
+      "actions": [
+        {"type": "tap_match", "comment": "pagina siguiente del panel informativo"},
+        {"type": "sleep", "s": 1.0}
+      ]
+    },
+    {
+      "name": "panel_siguiente2",
+      "template": "screens/panel_siguiente2.png",
+      "region": [250, 1380, 650, 1580],
+      "threshold": 0.85,
+      "cooldown": 2,
+      "actions": [
+        {"type": "tap_match", "comment": "pagina siguiente del panel informativo (variante clara)"},
+        {"type": "sleep", "s": 1.0}
+      ]
+    },
+    {
+      "name": "panel_cerrar",
+      "template": "screens/panel_cerrar.png",
+      "region": [250, 1380, 650, 1580],
+      "threshold": 0.85,
+      "cooldown": 3,
+      "actions": [
+        {"type": "tap_match", "comment": "cerrar panel informativo"},
+        {"type": "sleep", "s": 1.2}
+      ]
+    },
+    {
+      "name": "popup_x",
+      "template": "screens/popup_x.png",
+      "threshold": 0.9,
+      "cooldown": 3,
+      "actions": [
+        {"type": "tap_match", "comment": "cerrar popup de evento con la X"},
+        {"type": "sleep", "s": 1.2}
+      ]
+    },
+    {
+      "name": "boton_cerrar_grande",
+      "template": "screens/boton_cerrar_grande.png",
+      "region": [200, 1100, 700, 1560],
+      "threshold": 0.88,
+      "cooldown": 4,
+      "actions": [
+        {"type": "tap_match", "comment": "boton Cerrar grande de popups"},
+        {"type": "sleep", "s": 1.2}
+      ]
+    },
+    {
+      "name": "aventura_resultados",
+      "template": "screens/aventura_resultados.png",
+      "threshold": 0.87,
+      "cooldown": 4,
+      "actions": [
+        {"type": "tap_match", "comment": "recoger resultados de la aventura"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "aventuras_volver",
+      "template": "screens/aventura_automatica.png",
+      "region": [200, 1230, 700, 1360],
+      "threshold": 0.87,
+      "cooldown": 8,
+      "actions": [
+        {"type": "tap", "x": 60, "y": 1543, "comment": "flecha atras: volver de Aventuras al farmeo"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "historia_nuevo",
+      "template": "screens/historia_nuevo.png",
+      "region": [30, 450, 250, 1500],
+      "threshold": 0.88,
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap_match", "dx": 350, "dy": 15, "comment": "abrir el primer capitulo NUEVO (0/7)"},
+        {"type": "sleep", "s": 2.0}
+      ]
+    },
+    {
+      "name": "historia_libro_completo",
+      "template": "screens/historia_chevron_up.png",
+      "region": [750, 250, 900, 550],
+      "threshold": 0.85,
+      "pixel": {"x": 766, "y": 452, "bgr": [51, 239, 254], "tol": 60},
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap_match", "comment": "libro completado (estrella amarilla): colapsar desplegable"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "historia_expandir",
+      "template": "screens/historia_chevron.png",
+      "region": [750, 250, 900, 550],
+      "threshold": 0.85,
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap_match", "comment": "desplegar la lista de capitulos"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "menu_juego_historia",
+      "template": "screens/menu_historia.png",
+      "region": [0, 1100, 350, 1320],
+      "threshold": 0.9,
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap_match", "comment": "cuadro Historia dentro del menu del juego"},
+        {"type": "sleep", "s": 2.0}
+      ]
+    },
+    {
+      "name": "home_historia",
+      "template": "screens/home_historia.png",
+      "region": [0, 1150, 500, 1350],
+      "threshold": 0.88,
+      "cooldown": 6,
+      "actions": [
+        {"type": "tap", "x": 175, "y": 1270, "comment": "entrar en Historia desde el inicio"},
+        {"type": "sleep", "s": 2.0}
+      ]
+    },
+    {
+      "name": "seleccion_luchadores",
+      "template": "screens/seleccion_equipo_rival.png",
+      "region": [0, 0, 400, 110],
+      "threshold": 0.87,
+      "cooldown": 6,
+      "actions": [
+        {"type": "tap", "x": 265, "y": 935, "comment": "primer luchador"},
+        {"type": "sleep", "s": 0.5},
+        {"type": "tap", "x": 455, "y": 935, "comment": "segundo luchador"},
+        {"type": "sleep", "s": 0.5},
+        {"type": "tap", "x": 448, "y": 1529, "comment": "boton Listo"},
+        {"type": "sleep", "s": 2.0}
+      ]
+    },
+    {
+      "name": "victoria",
+      "template": "screens/victoria.png",
+      "region": [0, 600, 500, 1000],
+      "threshold": 0.75,
+      "cooldown": 3,
+      "actions": [
+        {"type": "tap", "x": 450, "y": 1200, "comment": "saltar la pose de victoria"},
+        {"type": "sleep", "s": 1.0}
+      ]
+    },
+    {
+      "name": "resultados_mision",
+      "template": "screens/resultados_exp.png",
+      "region": [0, 230, 500, 340],
+      "threshold": 0.87,
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap", "x": 448, "y": 1533, "comment": "boton OK"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "banner_eventos",
+      "template": "screens/banner_eventos.png",
+      "region": [0, 0, 400, 120],
+      "threshold": 0.87,
+      "cooldown": 4,
+      "actions": [
+        {"type": "tap", "x": 450, "y": 1200, "comment": "notificacion de Eventos encima: tocar zona neutra para avanzar"},
+        {"type": "sleep", "s": 1.2}
+      ]
+    },
+    {
+      "name": "toca_para_continuar",
+      "template": "screens/toca.png",
+      "region": [100, 900, 900, 1595],
+      "threshold": 0.85,
+      "cooldown": 3,
+      "actions": [
+        {"type": "tap", "x": 450, "y": 1450, "comment": "toca para continuar"},
+        {"type": "sleep", "s": 1.0}
+      ]
+    },
+    {
+      "name": "toca_esquina",
+      "template": "screens/toca2.png",
+      "region": [600, 1450, 900, 1600],
+      "threshold": 0.7,
+      "cooldown": 3,
+      "actions": [
+        {"type": "tap", "x": 450, "y": 1300, "comment": "tocar para continuar (variante esquina)"},
+        {"type": "sleep", "s": 1.0}
+      ]
+    },
+    {
+      "name": "recap_desafios",
+      "template": "screens/desafios_volver.png",
+      "region": [50, 1470, 470, 1600],
+      "threshold": 0.87,
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap", "x": 637, "y": 1533, "comment": "boton OK (avanzar, no repetir)"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "desafios_ok",
+      "template": "screens/desafios_header.png",
+      "region": [0, 240, 300, 350],
+      "threshold": 0.9,
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap", "x": 448, "y": 1533, "comment": "OK centrado (variante sin Volver a desafiar)"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "desbloqueo_nuevo_modo",
+      "template": "screens/has_desbloqueado.png",
+      "region": [0, 720, 900, 910],
+      "threshold": 0.85,
+      "cooldown": 3,
+      "actions": [
+        {"type": "tap", "x": 450, "y": 1300, "comment": "tocar para cerrar popup de desbloqueo"},
+        {"type": "sleep", "s": 1.0}
+      ]
+    },
+    {
+      "name": "seguir_jugando",
+      "template": "screens/seguir_jugando.png",
+      "region": [0, 330, 900, 470],
+      "threshold": 0.87,
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap", "x": 637, "y": 1141, "comment": "Si, avanzar a la siguiente historia"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "dialogo_historia",
+      "template": "screens/dialogo_saltar_texto.png",
+      "region": [550, 0, 900, 110],
+      "threshold": 0.87,
+      "cooldown": 4,
+      "actions": [
+        {"type": "tap", "x": 735, "y": 51, "comment": "boton Saltar"},
+        {"type": "sleep", "s": 1.0}
+      ]
+    },
+    {
+      "name": "dialogo_combate",
+      "template": "screens/dialogo_auto_no.png",
+      "region": [0, 0, 350, 110],
+      "threshold": 0.85,
+      "cooldown": 2,
+      "max_repeats": 40,
+      "actions": [
+        {"type": "tap", "x": 450, "y": 880, "comment": "dialogo en combate: tocar el bocadillo para avanzar"},
+        {"type": "sleep", "s": 0.8}
+      ]
+    },
+    {
+      "name": "preparacion_mision",
+      "template": "screens/prep_lucha.png",
+      "region": [430, 1300, 900, 1480],
+      "threshold": 0.87,
+      "cooldown": 6,
+      "actions": [
+        {"type": "tap", "x": 170, "y": 248, "comment": "pestaña Detalles (cierra popups)"},
+        {"type": "sleep", "s": 0.3},
+        {"type": "tap", "x": 170, "y": 248, "comment": "Detalles otra vez (por si hay ventana encima)"},
+        {"type": "sleep", "s": 0.3},
+        {"type": "tap", "x": 170, "y": 248, "comment": "Detalles tercera vez"},
+        {"type": "sleep", "s": 0.6},
+        {"type": "tap_if_pixel", "x": 621, "y": 1245, "bgr": [0, 186, 252], "tol": 60, "comment": "desmarcar Demo si esta marcado"},
+        {"type": "sleep", "s": 0.6},
+        {"type": "tap", "x": 668, "y": 1394, "comment": "boton Lucha"},
+        {"type": "sleep", "s": 2.0}
+      ]
+    }
+  ]
+}

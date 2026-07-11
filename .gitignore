@@ -1,0 +1,12 @@
+# Python embebido y dependencias (se instalan en local, ~200MB)
+tools/
+
+# Capturas de pantalla generadas en ejecucion
+capturas/
+
+# Credenciales de Telegram (crear telegram.json a mano, ver README)
+telegram.json
+
+# Python
+__pycache__/
+*.pyc
