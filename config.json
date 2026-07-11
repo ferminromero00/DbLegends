@@ -59,6 +59,43 @@
       ]
     },
     {
+      "name": "historia_fin_a_eventos",
+      "template": "screens/regresar_eventos.png",
+      "region": [0, 350, 900, 450],
+      "threshold": 0.87,
+      "cooldown": 6,
+      "actions": [
+        {"type": "tap", "x": 637, "y": 1142, "comment": "historia principal agotada: A eventos"},
+        {"type": "sleep", "s": 2.0}
+      ]
+    },
+    {
+      "name": "energia_insuficiente_parar",
+      "template": "screens/recuperacion_energia.png",
+      "region": [0, 350, 900, 450],
+      "threshold": 0.87,
+      "cooldown": 6,
+      "stop": true,
+      "stop_msg": "Bot DB Legends: energia agotada. No gasto Cronocristales (decidido por Fermin). Dia de farmeo completado, el bot se para limpiamente.",
+      "actions": [
+        {"type": "tap", "x": 262, "y": 1142, "comment": "No gastar Cronocristales"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "jefe_raid_ok",
+      "template": "screens/jefe_raid.png",
+      "region": [0, 350, 900, 450],
+      "threshold": 0.87,
+      "cooldown": 6,
+      "actions": [
+        {"type": "tap", "x": 450, "y": 1142, "comment": "Jefe Raid derrotado, no se puede luchar: OK"},
+        {"type": "sleep", "s": 1.5},
+        {"type": "tap", "x": 60, "y": 1543, "comment": "volver atras, en este mapa no hay nada que hacer"},
+        {"type": "sleep", "s": 2.0}
+      ]
+    },
+    {
       "name": "reproducir_tutorial_volver",
       "template": "screens/reproducir_tutorial.png",
       "region": [0, 330, 900, 470],
@@ -186,6 +223,29 @@
       ]
     },
     {
+      "name": "historia_nuevo_banner",
+      "template": "screens/historia_nuevo_banner.png",
+      "region": [30, 450, 250, 1500],
+      "threshold": 0.85,
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap_match", "dx": 330, "dy": 20, "comment": "abrir el banner de capitulo NUEVO (estilo cursiva)"},
+        {"type": "sleep", "s": 2.0}
+      ]
+    },
+    {
+      "name": "historia_tab_dificil",
+      "template": "screens/dificil_tab_blanca.png",
+      "region": [440, 480, 900, 560],
+      "threshold": 0.9,
+      "pixel": {"x": 766, "y": 452, "bgr": [51, 239, 254], "tol": 60},
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap_match", "comment": "normal completado: cambiar a la pestana DIFICIL"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
       "name": "historia_libro_completo",
       "template": "screens/historia_chevron_up.png",
       "region": [750, 250, 900, 550],
@@ -198,14 +258,97 @@
       ]
     },
     {
-      "name": "historia_expandir",
-      "template": "screens/historia_chevron.png",
+      "name": "historia_subir_expandido",
+      "template": "screens/historia_chevron_up.png",
       "region": [750, 250, 900, 550],
       "threshold": 0.85,
+      "cooldown": 2,
+      "max_repeats": 10,
+      "actions": [
+        {"type": "swipe", "x1": 450, "y1": 450, "x2": 450, "y2": 1150, "ms": 400, "comment": "parte expandida sin NUEVO a la vista: subir por la lista de capitulos"},
+        {"type": "sleep", "s": 1.0}
+      ]
+    },
+    {
+      "name": "historia_abrir_pendiente",
+      "detector": "libro_pendiente",
       "cooldown": 5,
       "actions": [
-        {"type": "tap_match", "comment": "desplegar la lista de capitulos"},
+        {"type": "tap_match", "comment": "abrir el primer libro visible sin sello TODO LISTO"},
         {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "historia_ir_eventos",
+      "detector": "historia_completa",
+      "cooldown": 6,
+      "actions": [
+        {"type": "tap_match", "comment": "historia completa al 100%: ir a EVENTO"},
+        {"type": "sleep", "s": 2.0}
+      ]
+    },
+    {
+      "name": "historia_scroll",
+      "template": "screens/indice_historias.png",
+      "region": [550, 90, 900, 170],
+      "threshold": 0.87,
+      "cooldown": 3,
+      "max_repeats": 8,
+      "actions": [
+        {"type": "scroll_hasta_fondo", "comment": "todos los libros visibles TODO LISTO: bajar al fondo y mirar de abajo hacia arriba"},
+        {"type": "sleep", "s": 1.0}
+      ]
+    },
+    {
+      "name": "eventos_tab_historia_original",
+      "template": "screens/tab_historia_orig_off.png",
+      "region": [0, 165, 900, 240],
+      "threshold": 0.9,
+      "cooldown": 4,
+      "actions": [
+        {"type": "tap_match", "comment": "en Eventos: cambiar a la pestana Historia original"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "evento_zenkai_pendiente",
+      "detector": "evento_zenkai",
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap_match", "comment": "abrir evento ZENKAI permanente con estrella gris"},
+        {"type": "sleep", "s": 2.0}
+      ]
+    },
+    {
+      "name": "evento_mapa_flecha",
+      "detector": "flecha_naranja",
+      "cooldown": 4,
+      "actions": [
+        {"type": "tap_match", "comment": "mapa de evento: entrar a la etapa que marca la flecha (si no esta LISTO)"},
+        {"type": "sleep", "s": 2.0}
+      ]
+    },
+    {
+      "name": "evento_mapa_volver",
+      "template": "screens/evento_misiones.png",
+      "region": [250, 1450, 650, 1600],
+      "threshold": 0.87,
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap", "x": 60, "y": 1543, "comment": "mapa de evento sin flecha (todo hecho): volver a la lista"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
+      "name": "eventos_scroll",
+      "template": "screens/tab_historia_orig_on.png",
+      "region": [0, 165, 900, 240],
+      "threshold": 0.9,
+      "cooldown": 3,
+      "max_repeats": 6,
+      "actions": [
+        {"type": "swipe", "x1": 450, "y1": 1000, "x2": 450, "y2": 400, "ms": 400, "comment": "sin ZENKAI pendiente a la vista: bajar por la lista de eventos"},
+        {"type": "sleep", "s": 1.2}
       ]
     },
     {
@@ -257,6 +400,17 @@
       ]
     },
     {
+      "name": "recap_desafios",
+      "template": "screens/desafios_volver.png",
+      "region": [50, 1470, 470, 1600],
+      "threshold": 0.87,
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap", "x": 637, "y": 1533, "comment": "boton OK derecho (pantallas con Volver a desafiar)"},
+        {"type": "sleep", "s": 1.5}
+      ]
+    },
+    {
       "name": "resultados_mision",
       "template": "screens/resultados_exp.png",
       "region": [0, 230, 500, 340],
@@ -298,17 +452,6 @@
       "actions": [
         {"type": "tap", "x": 450, "y": 1300, "comment": "tocar para continuar (variante esquina)"},
         {"type": "sleep", "s": 1.0}
-      ]
-    },
-    {
-      "name": "recap_desafios",
-      "template": "screens/desafios_volver.png",
-      "region": [50, 1470, 470, 1600],
-      "threshold": 0.87,
-      "cooldown": 5,
-      "actions": [
-        {"type": "tap", "x": 637, "y": 1533, "comment": "boton OK (avanzar, no repetir)"},
-        {"type": "sleep", "s": 1.5}
       ]
     },
     {
@@ -365,6 +508,18 @@
       "actions": [
         {"type": "tap", "x": 450, "y": 880, "comment": "dialogo en combate: tocar el bocadillo para avanzar"},
         {"type": "sleep", "s": 0.8}
+      ]
+    },
+    {
+      "name": "preparacion_ya_completada",
+      "template": "screens/prep_lucha.png",
+      "region": [430, 1300, 900, 1480],
+      "threshold": 0.87,
+      "pixel": {"x": 843, "y": 243, "bgr": [50, 239, 254], "tol": 60},
+      "cooldown": 5,
+      "actions": [
+        {"type": "tap", "x": 60, "y": 1543, "comment": "etapa ya completada (estrella amarilla en Desafios): volver atras"},
+        {"type": "sleep", "s": 1.5}
       ]
     },
     {
