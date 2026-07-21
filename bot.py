@@ -402,6 +402,14 @@ def main():
                     same_count = 1
                     last_screen_name = screen["name"]
                 if screen["actions"] and same_count > screen.get("max_repeats", cfg.get("max_repeats", 6)):
+                    rescue = screen.get("rescue_actions")
+                    if rescue:
+                        log(f"[{datetime.now():%H:%M:%S}] '{screen['name']}' repetida "
+                            f"{same_count} veces -> intento rescate", C_YELLOW)
+                        same_count = 0
+                        run_actions(cfg, {"actions": rescue}, img, center)
+                        time.sleep(1.0)
+                        continue
                     path = os.path.join(UNKNOWN_DIR, f"{datetime.now():%Y%m%d_%H%M%S}_atasco.png")
                     cv2.imwrite(path, img)
                     log(f"[{datetime.now():%H:%M:%S}] ATASCO: '{screen['name']}' ejecutada "

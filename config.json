@@ -131,9 +131,14 @@
       "template": "screens/tutorial_kaito.png",
       "threshold": 0.9,
       "cooldown": 2,
+      "max_repeats": 10,
       "actions": [
         {"type": "tap_match", "dx": 330, "comment": "avanzar bocadillo del tutorial"},
         {"type": "sleep", "s": 1.0}
+      ],
+      "rescue_actions": [
+        {"type": "tap", "x": 262, "y": 1511, "comment": "intentar pulsar boton FIN del tutorial"},
+        {"type": "sleep", "s": 1.5}
       ]
     },
     {
