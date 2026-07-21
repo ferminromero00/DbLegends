@@ -354,6 +354,7 @@ def main():
     recoveries = 0         # rescates via menu seguidos, para no ciclar
     pingpong = 0           # ciclos abrir libro -> colapsarlo (nada que hacer dentro)
     pingpong_scroll = False  # ya bajamos al fondo una vez por este bucle
+    mapa_bucle = 0         # ciclos evento_mapa_flecha -> preparacion_ya_completada
 
     while True:
         img = capture(cfg)
@@ -377,6 +378,23 @@ def main():
                 elif screen["name"] not in ("historia_libro_completo", "historia_abrir_pendiente"):
                     pingpong = 0
                     pingpong_scroll = False
+                # anti-bucle: flecha -> ya completada -> flecha (evento sin mas etapas)
+                if screen["name"] == "preparacion_ya_completada" and last_screen_name == "evento_mapa_flecha":
+                    mapa_bucle += 1
+                elif screen["name"] not in ("evento_mapa_flecha", "preparacion_ya_completada"):
+                    mapa_bucle = 0
+                if screen["name"] == "evento_mapa_flecha" and mapa_bucle >= 3:
+                    log(f"[{datetime.now():%H:%M:%S}] BUCLE flecha/completado {mapa_bucle}v: "
+                        f"marco evento como agotado y salgo del mapa", C_YELLOW)
+                    ez = next((s for s in cfg["screens"] if s.get("detector") == "evento_zenkai"), None)
+                    if ez is not None and ez.get("_ultimo_patch") is not None:
+                        ez.setdefault("_agotados", []).append(ez["_ultimo_patch"])
+                        ez["_ultimo_patch"] = None
+                    run_actions(cfg, {"actions": [{"type": "tap", "x": 60, "y": 1543, "comment": "volver del mapa"},
+                                                  {"type": "sleep", "s": 1.5}]}, img, center)
+                    mapa_bucle = 0
+                    time.sleep(1.0)
+                    continue
                 if screen["name"] == "historia_abrir_pendiente" and pingpong >= 3:
                     if not pingpong_scroll:
                         log(f"[{datetime.now():%H:%M:%S}] BUCLE abrir/colapsar libro: dentro no hay "
