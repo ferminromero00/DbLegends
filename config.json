@@ -316,17 +316,64 @@
       ]
     },
     {
-      "name": "evento_zenkai_pendiente",
-      "detector": "evento_zenkai",
+      "name": "evento_freezer",
+      "template": "screens/evento_freezer.png",
+      "threshold": 0.85,
       "cooldown": 5,
+      "event_tag": "freezer",
       "actions": [
-        {"type": "tap_match", "comment": "abrir evento ZENKAI permanente con estrella gris"},
+        {"type": "tap_match", "comment": "entrar al evento Freezer"},
+        {"type": "sleep", "s": 2.0}
+      ]
+    },
+    {
+      "name": "evento_ginyu",
+      "template": "screens/evento_ginyu.png",
+      "threshold": 0.85,
+      "cooldown": 5,
+      "event_tag": "ginyu",
+      "actions": [
+        {"type": "tap_match", "comment": "entrar al evento Ginyu"},
+        {"type": "sleep", "s": 2.0}
+      ]
+    },
+    {
+      "name": "evento_nappa",
+      "template": "screens/evento_nappa.png",
+      "threshold": 0.85,
+      "cooldown": 5,
+      "event_tag": "nappa",
+      "actions": [
+        {"type": "tap_match", "comment": "entrar al evento Nappa"},
+        {"type": "sleep", "s": 2.0}
+      ]
+    },
+    {
+      "name": "evento_raditz",
+      "template": "screens/evento_radithz.png",
+      "threshold": 0.85,
+      "cooldown": 5,
+      "event_tag": "raditz",
+      "actions": [
+        {"type": "tap_match", "comment": "entrar al evento Raditz"},
+        {"type": "sleep", "s": 2.0}
+      ]
+    },
+    {
+      "name": "evento_vegeta",
+      "template": "screens/evento_vegeta.png",
+      "threshold": 0.85,
+      "cooldown": 5,
+      "event_tag": "vegeta",
+      "actions": [
+        {"type": "tap_match", "comment": "entrar al evento Vegeta"},
         {"type": "sleep", "s": 2.0}
       ]
     },
     {
       "name": "evento_mapa_flecha",
       "detector": "flecha_naranja",
+      "threshold": 0.8,
       "cooldown": 4,
       "actions": [
         {"type": "tap_match", "comment": "mapa de evento: entrar a la etapa que marca la flecha (si no esta LISTO)"},
@@ -352,7 +399,7 @@
       "cooldown": 3,
       "max_repeats": 6,
       "actions": [
-        {"type": "swipe", "x1": 450, "y1": 1000, "x2": 450, "y2": 400, "ms": 400, "comment": "sin ZENKAI pendiente a la vista: bajar por la lista de eventos"},
+        {"type": "swipe", "x1": 450, "y1": 800, "x2": 450, "y2": 500, "ms": 600, "comment": "scroll suave: bajar por la lista de eventos"},
         {"type": "sleep", "s": 1.2}
       ]
     },

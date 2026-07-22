@@ -42,10 +42,6 @@ def load_config():
             s["_tpl_indice"] = cv2.imread(os.path.join(BASE, "screens", "indice_historias.png"))
         if s.get("detector") == "historia_completa":
             s["_tpl_parte1"] = cv2.imread(os.path.join(BASE, "screens", "parte1_diamante.png"))
-        if s.get("detector") == "evento_zenkai":
-            s["_tpl_tab_on"] = cv2.imread(os.path.join(BASE, "screens", "tab_historia_orig_on.png"))
-            s["_tpl_estrella"] = cv2.imread(os.path.join(BASE, "screens", "estrella_evento_gris.png"))
-            s["_tpl_limitado"] = cv2.imread(os.path.join(BASE, "screens", "limitado.png"))
         if s.get("detector") == "flecha_naranja":
             s["_tpl_flecha"] = cv2.imread(os.path.join(BASE, "screens", "flecha_naranja.png"))
             s["_tpl_listo"] = cv2.imread(os.path.join(BASE, "screens", "nodo_listo.png"))
@@ -191,7 +187,7 @@ def detect_flecha_naranja(img, s):
     si el nodo bajo la flecha NO tiene ya el cartel ¡LISTO!"""
     res = cv2.matchTemplate(img, s["_tpl_flecha"], cv2.TM_CCOEFF_NORMED)
     _, score, _, loc = cv2.minMaxLoc(res)
-    if score < 0.85:
+    if score < s.get("threshold", 0.85):
         return None
     x, y = loc
     th, tw = s["_tpl_flecha"].shape[:2]
@@ -205,40 +201,7 @@ def detect_flecha_naranja(img, s):
     return (x + tw // 2, y + th // 2 + 100)
 
 
-def detect_evento_zenkai(img, s):
-    """En Eventos > Historia original: busca la primera fila con estrella gris
-    que NO sea un evento Limitado y devuelve el punto para abrirla."""
-    if cv2.matchTemplate(img, s["_tpl_tab_on"], cv2.TM_CCOEFF_NORMED).max() < 0.85:
-        return None
-    res = cv2.matchTemplate(img, s["_tpl_estrella"], cv2.TM_CCOEFF_NORMED)
-    lh, lw = s["_tpl_limitado"].shape[:2]
-    ys, xs = np.where(res >= 0.85)
-    vistos = []
-    for y, x in sorted(zip(ys.tolist(), xs.tolist())):
-        if x < 780 or any(abs(y - v) < 40 for v in vistos):
-            continue
-        vistos.append(y)
-        roi = img[y + 20:y + 130, 600:880]
-        if roi.shape[0] >= lh and roi.shape[1] >= lw:
-            if cv2.matchTemplate(roi, s["_tpl_limitado"], cv2.TM_CCOEFF_NORMED).max() >= 0.8:
-                continue  # evento Limitado: no nos interesa
-        # eventos ya visitados esta sesion sin nada que hacer hoy: saltarlos
-        patch = img[max(0, y - 120):y + 40, 60:560]
-        zona = img[max(0, y - 160):y + 80, 40:600]
-        agotado = False
-        for p in s.get("_agotados", []):
-            if zona.shape[0] >= p.shape[0] and zona.shape[1] >= p.shape[1]:
-                if cv2.matchTemplate(zona, p, cv2.TM_CCOEFF_NORMED).max() >= 0.9:
-                    agotado = True
-                    break
-        if agotado:
-            continue
-        s["_ultimo_patch"] = patch.copy()
-        return (450, y + 22)
-    return None
-
-
-def match_screen(cfg, img):
+def match_screen(cfg, img, eventos_completados=None):
     """Devuelve la primera pantalla cuya plantilla aparece en la captura,
     junto con el centro (x, y) de la coincidencia en coordenadas de pantalla."""
     for s in cfg["screens"]:
@@ -257,15 +220,14 @@ def match_screen(cfg, img):
             if pt:
                 return s, 1.0, pt
             continue
-        if s.get("detector") == "evento_zenkai":
-            pt = detect_evento_zenkai(img, s)
-            if pt:
-                return s, 1.0, pt
-            continue
         if s.get("detector") == "flecha_naranja":
             pt = detect_flecha_naranja(img, s)
             if pt:
                 return s, 1.0, pt
+            continue
+        # saltar eventos ya completados en esta sesion
+        tag = s.get("event_tag")
+        if tag and eventos_completados and tag in eventos_completados:
             continue
         region = s.get("region")
         if region:
@@ -355,6 +317,9 @@ def main():
     pingpong = 0           # ciclos abrir libro -> colapsarlo (nada que hacer dentro)
     pingpong_scroll = False  # ya bajamos al fondo una vez por este bucle
     mapa_bucle = 0         # ciclos evento_mapa_flecha -> preparacion_ya_completada
+    evento_dificil_hecho = False  # ya se pulso dificil en este evento
+    eventos_completados = []  # tags de eventos completados (normal + dificil)
+    current_event_tag = None  # tag del evento en el que estamos dentro
 
     while True:
         img = capture(cfg)
@@ -363,10 +328,14 @@ def main():
             time.sleep(2)
             continue
 
-        screen, score, center = match_screen(cfg, img)
+        screen, score, center = match_screen(cfg, img, eventos_completados)
         now = time.time()
 
         if screen:
+            # track en que evento estamos entrando
+            et = screen.get("event_tag")
+            if et:
+                current_event_tag = et
             unknown_since = None
             recoveries = 0
             cooldown = screen.get("cooldown", 5)
@@ -378,23 +347,42 @@ def main():
                 elif screen["name"] not in ("historia_libro_completo", "historia_abrir_pendiente"):
                     pingpong = 0
                     pingpong_scroll = False
-                # anti-bucle: flecha -> ya completada -> flecha (evento sin mas etapas)
+                # anti-bucle: flecha -> ya completada -> flecha (evento sin mas etapas normales)
                 if screen["name"] == "preparacion_ya_completada" and last_screen_name == "evento_mapa_flecha":
                     mapa_bucle += 1
                 elif screen["name"] not in ("evento_mapa_flecha", "preparacion_ya_completada"):
                     mapa_bucle = 0
                 if screen["name"] == "evento_mapa_flecha" and mapa_bucle >= 3:
-                    log(f"[{datetime.now():%H:%M:%S}] BUCLE flecha/completado {mapa_bucle}v: "
-                        f"marco evento como agotado y salgo del mapa", C_YELLOW)
-                    ez = next((s for s in cfg["screens"] if s.get("detector") == "evento_zenkai"), None)
-                    if ez is not None and ez.get("_ultimo_patch") is not None:
-                        ez.setdefault("_agotados", []).append(ez["_ultimo_patch"])
-                        ez["_ultimo_patch"] = None
-                    run_actions(cfg, {"actions": [{"type": "tap", "x": 60, "y": 1543, "comment": "volver del mapa"},
-                                                  {"type": "sleep", "s": 1.5}]}, img, center)
-                    mapa_bucle = 0
-                    time.sleep(1.0)
-                    continue
+                    if not evento_dificil_hecho:
+                        log(f"[{datetime.now():%H:%M:%S}] NORMAL agotado -> cambio a DIFICIL", C_YELLOW)
+                        evento_dificil_hecho = True
+                        mapa_bucle = 0
+                        dificil_tpl = cv2.imread(os.path.join(BASE, "screens", "dificil_tab_blanca.png"))
+                        if dificil_tpl is not None:
+                            res = cv2.matchTemplate(img, dificil_tpl, cv2.TM_CCOEFF_NORMED)
+                            _, s_d, _, l_d = cv2.minMaxLoc(res)
+                            if s_d >= 0.9:
+                                th, tw = dificil_tpl.shape[:2]
+                                tap(cfg, l_d[0] + tw // 2, l_d[1] + th // 2)
+                                log(f"    tap_match en pestaña DIFICIL (score {s_d:.2f})", C_DIM)
+                                time.sleep(1.5)
+                                continue
+                        log("  no se encontro DIFICIL, intento coordenadas fijas", C_YELLOW)
+                        tap(cfg, 670, 520)
+                        time.sleep(1.5)
+                        continue
+                    else:
+                        log(f"[{datetime.now():%H:%M:%S}] DIFICIL tambien agotado -> evento completo", C_YELLOW)
+                        if current_event_tag:
+                            eventos_completados.append(current_event_tag)
+                            log(f"  >> evento '{current_event_tag}' completado, saltado el resto de la sesion", C_YELLOW)
+                            current_event_tag = None
+                        evento_dificil_hecho = False
+                        mapa_bucle = 0
+                        run_actions(cfg, {"actions": [{"type": "tap", "x": 60, "y": 1543, "comment": "volver del mapa"},
+                                                      {"type": "sleep", "s": 1.5}]}, img, center)
+                        time.sleep(1.0)
+                        continue
                 if screen["name"] == "historia_abrir_pendiente" and pingpong >= 3:
                     if not pingpong_scroll:
                         log(f"[{datetime.now():%H:%M:%S}] BUCLE abrir/colapsar libro: dentro no hay "
@@ -445,13 +433,10 @@ def main():
                     notify_telegram(cfg, msg)
                     return
                 if screen["name"] in ("evento_mapa_volver", "jefe_raid_ok"):
-                    # el mapa no tenia nada que hacer: recordar el evento y no reentrar hoy
-                    ez = next((s for s in cfg["screens"] if s.get("detector") == "evento_zenkai"), None)
-                    if ez is not None and ez.get("_ultimo_patch") is not None:
-                        ez.setdefault("_agotados", []).append(ez["_ultimo_patch"])
-                        ez["_ultimo_patch"] = None
-                        log(f"  >> evento sin nada pendiente hoy: lo salto el resto de la sesion "
-                            f"({len(ez['_agotados'])} saltados)", C_YELLOW)
+                    if current_event_tag and current_event_tag not in eventos_completados:
+                        eventos_completados.append(current_event_tag)
+                        log(f"  >> evento '{current_event_tag}' sin nada pendiente, saltado", C_YELLOW)
+                        current_event_tag = None
                 if screen["name"] == "recap_desafios":
                     misiones += 1
                     mins = (now - inicio) / 60
